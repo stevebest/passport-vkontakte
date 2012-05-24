@@ -4,7 +4,7 @@
   "description": "VK.com authentication strategy for Passport.",
   "author": { "name": "Jared Hanson", "email": "jaredhanson@gmail.com", "url": "http://www.jaredhanson.net/" },
   "contributors": [
-    { "name": "Stepan Stolyarov", "email": "stepan.stolyarov@gmail.com" },
+    { "name": "Stepan Stolyarov", "email": "stepan.stolyarov@gmail.com" }
   ],
   "repository": {
     "type": "git",
