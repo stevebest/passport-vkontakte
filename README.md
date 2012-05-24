@@ -65,8 +65,7 @@ app.get('/auth/vkontakte/callback',
 If you need extended permissions from the user, the permissions can be requested
 via the `scope` option to `passport.authenticate()`.
 
-For example, this authorization requests permission to the user's statuses and
-checkins:
+For example, this authorization requests permission to the user's friends:
 
 ```javascript
 app.get('/auth/vkontakte',
