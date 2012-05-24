@@ -22,17 +22,19 @@ account and OAuth 2.0 tokens.  The strategy requires a `verify` callback, which
 accepts these credentials and calls `done` providing a user, as well as
 `options` specifying a app ID, app secret, and callback URL.
 
-    passport.use(new VKontakteStrategy({
-        clientID: FACEBOOK_APP_ID,
-        clientSecret: FACEBOOK_APP_SECRET,
-        callbackURL: "http://localhost:3000/auth/facebook/callback"
-      },
-      function(accessToken, refreshToken, profile, done) {
-        User.findOrCreate({ facebookId: profile.id }, function (err, user) {
-          return done(err, user);
-        });
-      }
-    ));
+```javascript
+passport.use(new VKontakteStrategy({
+    clientID:     VKONTAKTE_APP_ID, // VK.com docs call it 'API ID'
+    clientSecret: VKONTAKTE_APP_SECRET,
+    callbackURL:  "http://localhost:3000/auth/vkontakte/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    User.findOrCreate({ vkontakteId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
+  }
+));
+```
 
 #### Authenticate Requests
 
