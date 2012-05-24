@@ -44,19 +44,21 @@ authenticate requests.
 For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
-    app.get('/auth/vkontakte',
-      passport.authenticate('vkontakte'),
-      function(req, res){
-        // The request will be redirected to vk.com for authentication, so
-        // this function will not be called.
-      });
+```javascript
+app.get('/auth/vkontakte',
+  passport.authenticate('vkontakte'),
+  function(req, res){
+    // The request will be redirected to vk.com for authentication, so
+    // this function will not be called.
+  });
 
-    app.get('/auth/vkontakte/callback', 
-      passport.authenticate('vkontakte', { failureRedirect: '/login' }),
-      function(req, res) {
-        // Successful authentication, redirect home.
-        res.redirect('/');
-      });
+app.get('/auth/vkontakte/callback', 
+  passport.authenticate('vkontakte', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
+```
       
 #### Extended Permissions
 
@@ -66,12 +68,14 @@ via the `scope` option to `passport.authenticate()`.
 For example, this authorization requests permission to the user's statuses and
 checkins:
 
-    app.get('/auth/vkontakte',
-      passport.authenticate('vkontakte', { scope: ['friends'] }),
-      function(req, res){
-        // The request will be redirected to vk.com for authentication, with
-        // extended permissions.
-      });
+```javascript
+app.get('/auth/vkontakte',
+  passport.authenticate('vkontakte', { scope: ['friends'] }),
+  function(req, res){
+    // The request will be redirected to vk.com for authentication, with
+    // extended permissions.
+  });
+```
 
 ## Tests
 
