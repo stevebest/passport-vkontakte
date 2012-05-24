@@ -1,16 +1,19 @@
 {
-  "name": "passport-facebook",
-  "version": "0.1.3",
-  "description": "Facebook authentication strategy for Passport.",
+  "name": "passport-vkontakte",
+  "version": "0.1.0",
+  "description": "VK.com authentication strategy for Passport.",
   "author": { "name": "Jared Hanson", "email": "jaredhanson@gmail.com", "url": "http://www.jaredhanson.net/" },
+  "contributors": [
+    { "name": "Stepan Stolyarov", "email": "stepan.stolyarov@gmail.com" },
+  ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/jaredhanson/passport-facebook.git"
+    "url": "git://github.com/stevebest/passport-vkontakte.git"
   },
   "bugs": {
-    "url": "http://github.com/jaredhanson/passport-facebook/issues"
+    "url": "http://github.com/stevebest/passport-vkontakte/issues"
   },
-  "main": "./lib/passport-facebook",
+  "main": "./lib/passport-vkontakte",
   "dependencies": {
     "pkginfo": "0.2.x",
     "passport-oauth": "~0.1.2"
@@ -26,5 +29,5 @@
     "type": "MIT",
     "url": "http://www.opensource.org/licenses/MIT" 
   } ],
-  "keywords": ["passport", "facebook", "auth", "authn", "authentication", "identity"]
+  "keywords": ["passport", "vkontakte", "vk", "вконтакте", "auth", "authn", "authentication", "identity"]
 }

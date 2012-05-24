@@ -1,28 +1,28 @@
 var vows = require('vows');
 var assert = require('assert');
 var util = require('util');
-var FacebookStrategy = require('passport-facebook/strategy');
+var VKontakteStrategy = require('passport-vkontakte/strategy');
 
 
-vows.describe('FacebookStrategy').addBatch({
+vows.describe('VKontakteStrategy').addBatch({
   
   'strategy': {
     topic: function() {
-      return new FacebookStrategy({
+      return new VKontakteStrategy({
         clientID: 'ABC123',
         clientSecret: 'secret'
       },
       function() {});
     },
     
-    'should be named facebook': function (strategy) {
-      assert.equal(strategy.name, 'facebook');
+    'should be named vkontakte': function (strategy) {
+      assert.equal(strategy.name, 'vkontakte');
     },
   },
   
   'strategy when loading user profile': {
     topic: function() {
-      var strategy = new FacebookStrategy({
+      var strategy = new VKontakteStrategy({
         clientID: 'ABC123',
         clientSecret: 'secret'
       },
@@ -30,7 +30,7 @@ vows.describe('FacebookStrategy').addBatch({
       
       // mock
       strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
-        var body = '{"id":"500308595","name":"Jared Hanson","first_name":"Jared","last_name":"Hanson","link":"http:\\/\\/www.facebook.com\\/jaredhanson","username":"jaredhanson","gender":"male","email":"jaredhanson\\u0040example.com"}';
+        var body = '{"response":[{"uid":650715,"first_name":"Stepan","last_name":"Stolyarov","sex":2}]}';
         
         callback(null, body, undefined);
       }
@@ -46,7 +46,7 @@ vows.describe('FacebookStrategy').addBatch({
         }
         
         process.nextTick(function () {
-          strategy.userProfile('access-token', done);
+          strategy.userProfile('access-token', 650715, done);
         });
       },
       
@@ -54,16 +54,12 @@ vows.describe('FacebookStrategy').addBatch({
         assert.isNull(err);
       },
       'should load profile' : function(err, profile) {
-        assert.equal(profile.provider, 'facebook');
-        assert.equal(profile.id, '500308595');
-        assert.equal(profile.username, 'jaredhanson');
-        assert.equal(profile.displayName, 'Jared Hanson');
-        assert.equal(profile.name.familyName, 'Hanson');
-        assert.equal(profile.name.givenName, 'Jared');
+        assert.equal(profile.provider, 'vkontakte');
+        assert.equal(profile.id, '650715');
+        assert.equal(profile.displayName, 'Stepan Stolyarov');
+        assert.equal(profile.name.givenName, 'Stepan');
+        assert.equal(profile.name.familyName, 'Stolyarov');
         assert.equal(profile.gender, 'male');
-        assert.equal(profile.profileUrl, 'http://www.facebook.com/jaredhanson');
-        assert.lengthOf(profile.emails, 1);
-        assert.equal(profile.emails[0].value, 'jaredhanson@example.com');
       },
       'should set raw property' : function(err, profile) {
         assert.isString(profile._raw);
@@ -76,7 +72,7 @@ vows.describe('FacebookStrategy').addBatch({
   
   'strategy when loading user profile and encountering an error': {
     topic: function() {
-      var strategy = new FacebookStrategy({
+      var strategy = new VKontakteStrategy({
         clientID: 'ABC123',
         clientSecret: 'secret'
       },
@@ -98,7 +94,7 @@ vows.describe('FacebookStrategy').addBatch({
         }
         
         process.nextTick(function () {
-          strategy.userProfile('access-token', done);
+          strategy.userProfile('access-token', 650715, done);
         });
       },
       

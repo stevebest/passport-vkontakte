@@ -1,28 +1,28 @@
-# Passport-Facebook
+# Passport-VKontakte
 
-[Passport](http://passportjs.org/) strategy for authenticating with [Facebook](http://www.facebook.com/)
+[Passport](http://passportjs.org/) strategy for authenticating with [VK.com](http://www.vk.com/)
 using the OAuth 2.0 API.
 
-This module lets you authenticate using Facebook in your Node.js applications.
-By plugging into Passport, Facebook authentication can be easily and
+This module lets you authenticate using VK.com in your Node.js applications.
+By plugging into Passport, VK.com authentication can be easily and
 unobtrusively integrated into any application or framework that supports
 [Connect](http://www.senchalabs.org/connect/)-style middleware, including
 [Express](http://expressjs.com/).
 
 ## Installation
 
-    $ npm install passport-facebook
+    $ npm install passport-vkontakte
 
 ## Usage
 
 #### Configure Strategy
 
-The Facebook authentication strategy authenticates users using a Facebook
+The VK.com authentication strategy authenticates users using a VK.com
 account and OAuth 2.0 tokens.  The strategy requires a `verify` callback, which
 accepts these credentials and calls `done` providing a user, as well as
 `options` specifying a app ID, app secret, and callback URL.
 
-    passport.use(new FacebookStrategy({
+    passport.use(new VKontakteStrategy({
         clientID: FACEBOOK_APP_ID,
         clientSecret: FACEBOOK_APP_SECRET,
         callbackURL: "http://localhost:3000/auth/facebook/callback"
@@ -36,21 +36,21 @@ accepts these credentials and calls `done` providing a user, as well as
 
 #### Authenticate Requests
 
-Use `passport.authenticate()`, specifying the `'facebook'` strategy, to
+Use `passport.authenticate()`, specifying the `'vkontakte'` strategy, to
 authenticate requests.
 
 For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
-    app.get('/auth/facebook',
-      passport.authenticate('facebook'),
+    app.get('/auth/vkontakte',
+      passport.authenticate('vkontakte'),
       function(req, res){
-        // The request will be redirected to Facebook for authentication, so
+        // The request will be redirected to vk.com for authentication, so
         // this function will not be called.
       });
 
-    app.get('/auth/facebook/callback', 
-      passport.authenticate('facebook', { failureRedirect: '/login' }),
+    app.get('/auth/vkontakte/callback', 
+      passport.authenticate('vkontakte', { failureRedirect: '/login' }),
       function(req, res) {
         // Successful authentication, redirect home.
         res.redirect('/');
@@ -64,33 +64,31 @@ via the `scope` option to `passport.authenticate()`.
 For example, this authorization requests permission to the user's statuses and
 checkins:
 
-    app.get('/auth/facebook',
-      passport.authenticate('facebook', { scope: ['user_status', 'user_checkins'] }),
+    app.get('/auth/vkontakte',
+      passport.authenticate('vkontakte', { scope: ['friends'] }),
       function(req, res){
-        // The request will be redirected to Facebook for authentication, with
+        // The request will be redirected to vk.com for authentication, with
         // extended permissions.
       });
-
-## Examples
-
-For a complete, working example, refer to the [login example](https://github.com/jaredhanson/passport-facebook/tree/master/examples/login).
 
 ## Tests
 
     $ npm install --dev
     $ make test
 
-[![Build Status](https://secure.travis-ci.org/jaredhanson/passport-facebook.png)](http://travis-ci.org/jaredhanson/passport-facebook)
+[![Build Status](https://secure.travis-ci.org/stevebest/passport-vkontakte.png)](http://travis-ci.org/stevebest/passport-vkontakte)
 
 ## Credits
 
   - [Jared Hanson](http://github.com/jaredhanson)
+  - [Stepan Stolyarov](http://github.com/stevebest)
 
 ## License
 
 (The MIT License)
 
 Copyright (c) 2011 Jared Hanson
+Copyright (c) 2012 Stepan Stolyarov
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

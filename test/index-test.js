@@ -1,14 +1,14 @@
 var vows = require('vows');
 var assert = require('assert');
 var util = require('util');
-var facebook = require('passport-facebook');
+var vkontakte = require('passport-vkontakte');
 
 
-vows.describe('passport-facebook').addBatch({
+vows.describe('passport-vkontakte').addBatch({
   
   'module': {
     'should report a version': function (x) {
-      assert.isString(facebook.version);
+      assert.isString(vkontakte.version);
     },
   },
   
