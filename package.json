@@ -1,10 +1,17 @@
 {
   "name": "passport-vkontakte",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "VK.com authentication strategy for Passport.",
-  "author": { "name": "Jared Hanson", "email": "jaredhanson@gmail.com", "url": "http://www.jaredhanson.net/" },
+  "author": {
+    "name": "Jared Hanson",
+    "email": "jaredhanson@gmail.com",
+    "url": "http://www.jaredhanson.net/"
+  },
   "contributors": [
-    { "name": "Stepan Stolyarov", "email": "stepan.stolyarov@gmail.com" }
+    {
+      "name": "Stepan Stolyarov",
+      "email": "stepan.stolyarov@gmail.com"
+    }
   ],
   "repository": {
     "type": "git",
@@ -24,10 +31,23 @@
   "scripts": {
     "test": "NODE_PATH=lib node_modules/.bin/vows test/*-test.js"
   },
-  "engines": { "node": ">= 0.4.0" },
-  "licenses": [ {
-    "type": "MIT",
-    "url": "http://www.opensource.org/licenses/MIT" 
-  } ],
-  "keywords": ["passport", "vkontakte", "vk", "вконтакте", "auth", "authn", "authentication", "identity"]
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "keywords": [
+    "passport",
+    "vkontakte",
+    "vk",
+    "вконтакте",
+    "auth",
+    "authn",
+    "authentication",
+    "identity"
+  ]
 }
