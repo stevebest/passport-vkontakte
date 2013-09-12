@@ -56,7 +56,7 @@ vows.describe('VKontakteStrategy').addBatch({
         }
 
         process.nextTick(function () {
-          strategy.userProfile('access-token', 650715, done);
+          strategy.userProfile('access-token', done);
         });
       },
 
@@ -106,7 +106,7 @@ vows.describe('VKontakteStrategy').addBatch({
       }
 
       process.nextTick(function () {
-        strategy.userProfile('access-token', 650715, function() {});
+        strategy.userProfile('access-token', function() {});
       });
     },
 
@@ -144,7 +144,7 @@ vows.describe('VKontakteStrategy').addBatch({
         }
 
         process.nextTick(function () {
-          strategy.userProfile('access-token', 650715, done);
+          strategy.userProfile('access-token', done);
         });
       },
 
