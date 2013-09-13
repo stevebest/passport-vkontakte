@@ -4,7 +4,6 @@ var util = require('util');
 var urlParser = require('url');
 var VKontakteStrategy = require('passport-vkontakte/strategy');
 
-
 vows.describe('VKontakteStrategy').addBatch({
 
   'strategy': {
@@ -43,7 +42,7 @@ vows.describe('VKontakteStrategy').addBatch({
         });
 
         callback(null, body, undefined);
-      }
+      };
 
       return strategy;
     },
@@ -103,7 +102,7 @@ vows.describe('VKontakteStrategy').addBatch({
       strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
         var query = urlParser.parse(url, true).query;
         self.callback(null, query);
-      }
+      };
 
       process.nextTick(function () {
         strategy.userProfile('access-token', function() {});
@@ -120,7 +119,7 @@ vows.describe('VKontakteStrategy').addBatch({
     },
   },
 
-  'strategy when loading user profile and encountering an error': {
+  'strategy when loading user profile and encountering an internal error': {
     topic: function() {
       var strategy = new VKontakteStrategy({
         clientID: 'ABC123',
@@ -131,7 +130,7 @@ vows.describe('VKontakteStrategy').addBatch({
       // mock
       strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
         callback(new Error('something-went-wrong'));
-      }
+      };
 
       return strategy;
     },
@@ -160,4 +159,131 @@ vows.describe('VKontakteStrategy').addBatch({
     },
   },
 
+  'strategy when loading user profile and encountering an api error': {
+    topic: function() {
+      var strategy = new VKontakteStrategy({
+        clientID: 'ABC123',
+        clientSecret: 'secret'
+      },
+      function() {});
+
+      // mock
+      strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
+        var body = JSON.stringify({
+          error: {
+            error_msg: 'Some message',
+            error_code: 'some_code'
+          }
+        });
+        callback(null, body);
+      };
+
+      return strategy;
+    },
+
+    'when told to load user profile': {
+      topic: function(strategy) {
+        var self = this;
+        function done(err, profile) {
+          self.callback(err, profile);
+        }
+
+        process.nextTick(function () {
+          strategy.userProfile('access-token', done);
+        });
+      },
+
+      'should error' : function(err, req) {
+        assert.isNotNull(err);
+      },
+      'should wrap error in VkontakteAPIError' : function(err, req) {
+        assert.equal(err.constructor.name, 'VkontakteAPIError');
+      },
+      'should pass error_msg and error_code' : function(err, req) {
+        assert.equal(err.message, 'Some message');
+        assert.equal(err.code, 'some_code');
+      },
+      'should not load profile' : function(err, profile) {
+        assert.isUndefined(profile);
+      },
+    },
+  },
+
+  'strategy when encountering token error': {
+    topic: function() {
+      var strategy = new VKontakteStrategy({
+        clientID: 'ABC123',
+        clientSecret: 'secret'
+      },
+      function() {});
+
+      // mock
+      strategy._oauth2.getOAuthAccessToken = function(code, opts, callback) {
+        var error = new Error();
+        error.statusCode = 400;
+        error.data = JSON.stringify({
+          error: {
+            error_msg: 'Some message',
+            error_code: 'some_code'
+          }
+        });
+        callback(error);
+      };
+
+      strategy.error = this.callback.bind(this);
+
+      process.nextTick(function () {
+        strategy.authenticate({
+          query: {
+            code: 'sample code'
+          }
+        });
+      });
+    },
+
+    'should error' : function(err, req) {
+      assert.isNotNull(err);
+    },
+    'should wrap error in VkontakteTokenError' : function(err, req) {
+      assert.equal(err.constructor.name, 'VkontakteTokenError');
+    },
+    'should pass error_msg and error_code' : function(err, req) {
+      assert.equal(err.message, 'Some message');
+      assert.equal(err.code, 'some_code');
+    },
+  },
+
+  'strategy when encountering authorization error': {
+    topic: function() {
+      var strategy = new VKontakteStrategy({
+        clientID: 'ABC123',
+        clientSecret: 'secret'
+      },
+      function() {});
+
+      strategy.error = this.callback.bind(this);
+
+      process.nextTick(function () {
+        strategy.authenticate({
+          query: {
+            error: 'some_error',
+            error_description: 'Error description',
+            error_reason: 'reason'
+          }
+        });
+      });
+    },
+
+    'should error' : function(err, req) {
+      assert.isNotNull(err);
+    },
+    'should wrap error in VkontakteAuthorizationError' : function(err, req) {
+      assert.equal(err.constructor.name, 'VkontakteAuthorizationError');
+    },
+    'should pass error_msg and error_code' : function(err, req) {
+      assert.equal(err.message, 'Error description');
+      assert.equal(err.code, 'reason');
+      assert.equal(err.type, 'some_error');
+    },
+  },
 }).export(module);
