@@ -64,11 +64,11 @@ app.get('/auth/vkontakte/callback',
 
 Set `display` in `passport.authenticate()` options to specify display
 mode. Refer to the [OAuth dialog
-documentation](https://developers.facebook.com/docs/reference/dialogs/oauth/)
-for information on its usage. 
+documentation](http://vk.com/dev/auth_mobile)
+for information on its usage.
 
-    app.get('/auth/facebook',
-      passport.authenticate('facebook', { display: 'mobile' }),
+    app.get('/auth/vkontakte',
+      passport.authenticate('vkontakte', { display: 'mobile' }),
       function(req, res){
         // ...
       });

@@ -289,7 +289,7 @@ vows.describe('VKontakteStrategy').addBatch({
 
   'strategy when loading authorization url': {
     topic: function () {
-      var strategy = new FacebookStrategy({
+      var strategy = new VKontakteStrategy({
         clientID: 'ABC123',
         clientSecret: 'secret'
       },
@@ -336,7 +336,6 @@ vows.describe('VKontakteStrategy').addBatch({
 
         return url;
       },
-
 
       'sets authorization param to mobile': function(url) {
         var params = urlParser.parse(url, true).query;
