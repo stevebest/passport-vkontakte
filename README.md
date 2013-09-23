@@ -52,14 +52,14 @@ app.get('/auth/vkontakte',
     // this function will not be called.
   });
 
-app.get('/auth/vkontakte/callback', 
+app.get('/auth/vkontakte/callback',
   passport.authenticate('vkontakte', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
     res.redirect('/');
   });
 ```
-      
+
 #### Extended Permissions
 
 If you need extended permissions from the user, the permissions can be requested
@@ -75,6 +75,19 @@ app.get('/auth/vkontakte',
     // extended permissions.
   });
 ```
+
+#### Profile Fields
+
+The VK.com profile may contain a lot of information.  The
+strategy can be configured with a `profileFields` parameter which specifies a
+list of additional fields your application needs. For example, to fetch users's `city` and `bdate` configure strategy like this.
+
+    passport.use(new VKontakteStrategy({
+        // clientID, clientSecret and callbackURL
+        profileFields: ['city', bdate']
+      },
+      // verify callback
+    ));
 
 ## Tests
 
