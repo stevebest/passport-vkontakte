@@ -23,7 +23,8 @@
   "main": "./lib/passport-vkontakte",
   "dependencies": {
     "pkginfo": "0.2.x",
-    "passport-oauth2": "~1.1.1"
+    "passport-oauth2": "~1.1.1",
+    "request": "~2.39.0"
   },
   "devDependencies": {
     "vows": "0.7.x"
