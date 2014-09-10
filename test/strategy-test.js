@@ -94,7 +94,8 @@ vows.describe('VKontakteStrategy').addBatch({
       var strategy = new VKontakteStrategy({
         clientID: 'ABC123',
         clientSecret: 'secret',
-        profileFields: ['custom_field_1', 'custom_field_2']
+        profileFields: ['custom_field_1', 'custom_field_2'],
+        apiVersion: '5.17'
       },
       function() {});
 
@@ -114,8 +115,8 @@ vows.describe('VKontakteStrategy').addBatch({
       assert.notEqual(foelds.indexOf('custom_field_1'), -1);
       assert.notEqual(foelds.indexOf('custom_field_2'), -1);
     },
-    'should have version flag in query' : function(err, query) {
-      assert.equal(query.v, '5.0');
+    'should have appropriate version flag in query' : function(err, query) {
+      assert.equal(query.v, '5.17');
     },
   },
 

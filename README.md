@@ -101,6 +101,19 @@ list of additional fields your application needs. For example, to fetch users's 
       },
       // verify callback
     ));
+    
+#### API version
+
+The VK.com profile structure can differ from one API version to another. The specific version to use can be configured with a `apiVersion` parameter. The default is 5.0.
+    
+```javascript  
+passport.use(new VKontakteStrategy({
+    // clientID, clientSecret and callbackURL
+    apiVersion: '5.17'
+  },
+  // verify callback
+));
+```
 
 ## Tests
 
