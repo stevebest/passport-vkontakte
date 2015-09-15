@@ -115,6 +115,20 @@ passport.use(new VKontakteStrategy({
 ));
 ```
 
+
+#### HTTPS support
+
+You can pass `https` parameter to be able to receive https link to avatar(and other media) on vk.com
+    
+```javascript  
+passport.use(new VKontakteStrategy({
+    // clientID, clientSecret and callbackURL
+    https: 1
+  },
+  // verify callback
+));
+```
+
 ## Tests
 
     $ npm install --dev
