@@ -97,7 +97,7 @@ list of additional fields your application needs. For example, to fetch users's 
 
     passport.use(new VKontakteStrategy({
         // clientID, clientSecret and callbackURL
-        profileFields: ['city', bdate']
+        profileFields: ['city', 'bdate']
       },
       // verify callback
     ));
