@@ -86,7 +86,7 @@ For example, this authorization requests permission to the user's friends:
 
 ```javascript
 app.get('/auth/vkontakte',
-  passport.authenticate('vkontakte', { scope: ['friends'] }),
+  passport.authenticate('vkontakte', { scope: ['status', 'email', 'friends', 'notify'] }),
   function(req, res){
     // The request will be redirected to vk.com for authentication, with
     // extended permissions.
