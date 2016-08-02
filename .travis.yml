@@ -2,3 +2,19 @@ language: "node_js"
 node_js:
   - 0.4
   - 0.6
+  - 4
+  - 6
+
+cache:
+  directories:
+    - node_modules
+
+before_script:
+  # upgrade NPM
+  - npm install -g npm
+
+install:
+  - npm install
+
+script:
+  - npm test
