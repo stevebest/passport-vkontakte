@@ -1,5 +1,7 @@
 # Passport-VKontakte
 
+[![Build Status](https://secure.travis-ci.org/stevebest/passport-vkontakte.png)](http://travis-ci.org/stevebest/passport-vkontakte)
+
 [Passport](http://passportjs.org/) strategy for authenticating with [VK.com](http://www.vk.com/)
 using the OAuth 2.0 API.
 
@@ -23,8 +25,10 @@ accepts these credentials and calls `done` providing a user, as well as
 `options` specifying a app ID, app secret, and callback URL.
 
 ```javascript
+const VKontakteStrategy = require('passport-vkontakte').Strategy;
+
 passport.use(new VKontakteStrategy({
-    clientID:     VKONTAKTE_APP_ID, // VK.com docs call it 'API ID'
+    clientID:     VKONTAKTE_APP_ID, // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'
     clientSecret: VKONTAKTE_APP_SECRET,
     callbackURL:  "http://localhost:3000/auth/vkontakte/callback"
   },
@@ -97,16 +101,16 @@ list of additional fields your application needs. For example, to fetch users's 
 
     passport.use(new VKontakteStrategy({
         // clientID, clientSecret and callbackURL
-        profileFields: ['city', bdate']
+        profileFields: ['city', 'bdate']
       },
       // verify callback
     ));
-    
+
 #### API version
 
 The VK.com profile structure can differ from one API version to another. The specific version to use can be configured with a `apiVersion` parameter. The default is 5.0.
-    
-```javascript  
+
+```javascript
 passport.use(new VKontakteStrategy({
     // clientID, clientSecret and callbackURL
     apiVersion: '5.17'
@@ -119,8 +123,6 @@ passport.use(new VKontakteStrategy({
 
     $ npm install --dev
     $ make test
-
-[![Build Status](https://secure.travis-ci.org/stevebest/passport-vkontakte.png)](http://travis-ci.org/stevebest/passport-vkontakte)
 
 ## Credits
 
