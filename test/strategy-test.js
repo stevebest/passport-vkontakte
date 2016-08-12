@@ -2,7 +2,7 @@ var vows = require('vows');
 var assert = require('assert');
 var util = require('util');
 var urlParser = require('url');
-var VKontakteStrategy = require('passport-vkontakte/strategy');
+var VKontakteStrategy = require('../').Strategy;
 
 vows.describe('VKontakteStrategy').addBatch({
 

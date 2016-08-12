@@ -20,16 +20,16 @@
   "bugs": {
     "url": "http://github.com/stevebest/passport-vkontakte/issues"
   },
-  "main": "./lib/passport-vkontakte",
+  "main": "./lib/passport-vkontakte/index.js",
   "dependencies": {
     "pkginfo": "0.2.x",
     "passport-oauth2": "1.3.x"
   },
   "devDependencies": {
-    "vows": "0.7.x"
+    "vows": "^0.7.0"
   },
   "scripts": {
-    "test": "NODE_PATH=lib `npm bin`/vows test/*-test.js"
+    "test": "vows test/*-test.js"
   },
   "engines": {
     "node": ">= 0.4.0"

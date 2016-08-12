@@ -1,7 +1,7 @@
 var vows = require('vows');
 var assert = require('assert');
 var util = require('util');
-var vkontakte = require('passport-vkontakte');
+var vkontakte = require('../');
 
 
 vows.describe('passport-vkontakte').addBatch({
