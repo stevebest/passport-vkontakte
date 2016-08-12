@@ -1,10 +1,10 @@
 var express = require('express')
   , passport = require('passport')
   , util = require('util')
-  , FacebookStrategy = require('passport-facebook').Strategy;
+  , VkStrategy = require('passport-vkontakte').Strategy;
 
-var FACEBOOK_APP_ID = "--insert-facebook-app-id-here--"
-var FACEBOOK_APP_SECRET = "--insert-facebook-app-secret-here--";
+var VK_APP_ID = process.env.VK_APP_ID;
+var VK_APP_SECRET = VK_APP_SECRET;
 
 
 // Passport session setup.
@@ -12,7 +12,7 @@ var FACEBOOK_APP_SECRET = "--insert-facebook-app-secret-here--";
 //   serialize users into and deserialize users out of the session.  Typically,
 //   this will be as simple as storing the user ID when serializing, and finding
 //   the user by ID when deserializing.  However, since this example does not
-//   have a database of user records, the complete Facebook profile is serialized
+//   have a database of user records, the complete VK profile is serialized
 //   and deserialized.
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -23,22 +23,22 @@ passport.deserializeUser(function(obj, done) {
 });
 
 
-// Use the FacebookStrategy within Passport.
+// Use the VkStrategy within Passport.
 //   Strategies in Passport require a `verify` function, which accept
-//   credentials (in this case, an accessToken, refreshToken, and Facebook
+//   credentials (in this case, an accessToken, refreshToken, and VK
 //   profile), and invoke a callback with a user object.
-passport.use(new FacebookStrategy({
-    clientID: FACEBOOK_APP_ID,
-    clientSecret: FACEBOOK_APP_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/callback"
+passport.use(new VkStrategy({
+    clientID: VK_APP_ID,
+    clientSecret: VK_APP_SECRET,
+    callbackURL: "http://localhost:3000/auth/vk/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
       
-      // To keep the example simple, the user's Facebook profile is returned to
+      // To keep the example simple, the user's VK profile is returned to
       // represent the logged-in user.  In a typical application, you would want
-      // to associate the Facebook account with a user record in your database,
+      // to associate the VK account with a user record in your database,
       // and return that user instead.
       return done(null, profile);
     });
@@ -51,7 +51,7 @@ passport.use(new FacebookStrategy({
 var app = express.createServer();
 
 // configure Express
-app.configure(function() {
+
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.logger());
@@ -65,7 +65,7 @@ app.configure(function() {
   app.use(passport.session());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
-});
+
 
 
 app.get('/', function(req, res){
@@ -80,25 +80,25 @@ app.get('/login', function(req, res){
   res.render('login', { user: req.user });
 });
 
-// GET /auth/facebook
+// GET /auth/vk
 //   Use passport.authenticate() as route middleware to authenticate the
-//   request.  The first step in Facebook authentication will involve
-//   redirecting the user to facebook.com.  After authorization, Facebook will
-//   redirect the user back to this application at /auth/facebook/callback
-app.get('/auth/facebook',
-  passport.authenticate('facebook'),
+//   request.  The first step in VK authentication will involve
+//   redirecting the user to vk.com.  After authorization, VK will
+//   redirect the user back to this application at /auth/vk/callback
+app.get('/auth/vk',
+  passport.authenticate('vk'),
   function(req, res){
-    // The request will be redirected to Facebook for authentication, so this
+    // The request will be redirected to VK for authentication, so this
     // function will not be called.
   });
 
-// GET /auth/facebook/callback
+// GET /auth/vk/callback
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
-app.get('/auth/facebook/callback', 
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
+app.get('/auth/vk/callback', 
+  passport.authenticate('vk', { failureRedirect: '/login' }),
   function(req, res) {
     res.redirect('/');
   });
