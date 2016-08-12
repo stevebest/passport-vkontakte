@@ -27,16 +27,20 @@ accepts these credentials and calls `done` providing a user, as well as
 ```javascript
 const VKontakteStrategy = require('passport-vkontakte').Strategy;
 
-passport.use(new VKontakteStrategy({
+passport.use(new VKontakteStrategy(
+  {
     clientID:     VKONTAKTE_APP_ID, // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'
     clientSecret: VKONTAKTE_APP_SECRET,
     callbackURL:  "http://localhost:3000/auth/vkontakte/callback"
   },
-  function myVerifyCallbackFn(accessToken, refreshToken, params, profile, done) {
-    // console.log(params.email); // getting the email
-    User.findOrCreate({ vkontakteId: profile.id }, function (err, user) {
-      return done(err, user);
-    });
+  function myVerifyCallbackFn(accessToken, refreshToken, profile, done) {
+
+    // Now that we have user's `profile` as seen by VK, we can
+    // use it to find corresponding database records on our side.
+    // Here, we have a hypothetical `User` class which does what it says.
+    User.findOrCreate({ vkontakteId: profile.id })
+        .then(function (user) { done(null, user) })
+        .catch(done);
   }
 ));
 ```
@@ -103,11 +107,15 @@ The VK.com profile may contain a lot of information.  The
 strategy can be configured with a `profileFields` parameter which specifies a
 list of additional fields your application needs. For example, to fetch users's `city` and `bdate` configure strategy like this.
 
+Notice that requesting the user's email address requires an `email` access
+scope, which you should explicitly list as in following example:
+
 ```javascript
 passport.use(new VKontakteStrategy(
   {
     // clientID: ..., clientSecret: ..., callbackURL: ...,
-    profileFields: ['city', 'bdate']
+    scope: ['email' /* ... and others, if needed */]
+    profileFields: ['email', 'city', 'bdate']
   },
   myVerifyCallbackFn
 ));
@@ -136,6 +144,10 @@ passport.use(new VKontakteStrategy(
 
   - [Jared Hanson](http://github.com/jaredhanson)
   - [Stepan Stolyarov](http://github.com/stevebest)
+
+## Special Thanks
+
+To all the people who had to cope with idiosyncrasies of OAuth2 and VK API!
 
 ## License
 
