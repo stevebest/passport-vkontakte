@@ -20,7 +20,7 @@
   "bugs": {
     "url": "http://github.com/stevebest/passport-vkontakte/issues"
   },
-  "main": "./lib/passport-vkontakte/index.js",
+  "main": "./lib/index.js",
   "dependencies": {
     "pkginfo": "0.2.x",
     "passport-oauth2": "1.3.x"
