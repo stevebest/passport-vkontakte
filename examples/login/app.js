@@ -31,16 +31,15 @@ passport.deserializeUser(function(obj, done) {
 //   Strategies in Passport require a `verify` function, which accept
 //   credentials (in this case, an accessToken, refreshToken, and VK
 //   profile), and invoke a callback with a user object.
-passport.use(new VkStrategy({
+passport.use(new VkStrategy(
+  {
     clientID: VK_APP_ID,
     clientSecret: VK_APP_SECRET,
-    callbackURL: "http://localhost:3000/auth/vk/callback"
+    callbackURL: "http://localhost:3000/auth/vk/callback",
+    scope: ['email'],
+    profileFields: ['email'],
   },
-  function verify(accessToken, refreshToken, profile, done) {
-
-      console.log('access token: ', accessToken);
-      console.log('refreshToken: ', refreshToken);
-      console.log('profile: ', profile);
+  function verify(accessToken, refreshToken, params, profile, done) {
 
     // asynchronous verification, for effect...
     process.nextTick(function () {

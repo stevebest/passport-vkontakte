@@ -12,6 +12,12 @@
     <p>VK Name: <%= user.displayName %></p>
 
     <p>
+    <pre>
+      <%= JSON.stringify(user, null, 2) %>
+    </pre>
+    </p>
+
+    <p>
         <a href="/logout">Log out</a>
     </p>
 
