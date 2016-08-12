@@ -268,8 +268,7 @@ vows.describe('VKontakteStrategy').addBatch({
         strategy.authenticate({
           query: {
             error: 'some_error',
-            error_description: 'Error description',
-            error_reason: 'reason'
+            error_description: 'Error description'
           }
         });
       });
@@ -279,12 +278,11 @@ vows.describe('VKontakteStrategy').addBatch({
       assert.isNotNull(err);
     },
     'should wrap error in VkontakteAuthorizationError' : function(err, req) {
-      assert.equal(err.constructor.name, 'VkontakteAuthorizationError');
+      assert.equal(err.constructor.name, 'AuthorizationError');
     },
     'should pass error_msg and error_code' : function(err, req) {
       assert.equal(err.message, 'Error description');
-      assert.equal(err.code, 'reason');
-      assert.equal(err.type, 'some_error');
+      assert.equal(err.code, 'some_error');
     },
   },
 
