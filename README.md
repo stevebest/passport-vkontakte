@@ -32,7 +32,7 @@ passport.use(new VKontakteStrategy({
     clientSecret: VKONTAKTE_APP_SECRET,
     callbackURL:  "http://localhost:3000/auth/vkontakte/callback"
   },
-  function(accessToken, refreshToken, params, profile, done) {
+  function myVerifyCallbackFn(accessToken, refreshToken, params, profile, done) {
     // console.log(params.email); // getting the email
     User.findOrCreate({ vkontakteId: profile.id }, function (err, user) {
       return done(err, user);
@@ -52,14 +52,14 @@ application:
 ```javascript
 app.get('/auth/vkontakte',
   passport.authenticate('vkontakte'),
-  function(req, res){
+  function (req, res) {
     // The request will be redirected to vk.com for authentication, so
     // this function will not be called.
   });
 
 app.get('/auth/vkontakte/callback',
   passport.authenticate('vkontakte', { failureRedirect: '/login' }),
-  function(req, res) {
+  function (req, res) {
     // Successful authentication, redirect home.
     res.redirect('/');
   });
@@ -72,11 +72,14 @@ mode. Refer to the [OAuth dialog
 documentation](http://vk.com/dev/auth_mobile)
 for information on its usage.
 
-    app.get('/auth/vkontakte',
-      passport.authenticate('vkontakte', { display: 'mobile' }),
-      function(req, res){
-        // ...
-      });
+
+```javascript
+app.get('/auth/vkontakte',
+  passport.authenticate('vkontakte', { display: 'mobile' }),
+  function(req, res){
+    // ...
+  });
+```
 
 #### Extended Permissions
 
@@ -100,23 +103,27 @@ The VK.com profile may contain a lot of information.  The
 strategy can be configured with a `profileFields` parameter which specifies a
 list of additional fields your application needs. For example, to fetch users's `city` and `bdate` configure strategy like this.
 
-    passport.use(new VKontakteStrategy({
-        // clientID, clientSecret and callbackURL
-        profileFields: ['city', 'bdate']
-      },
-      // verify callback
-    ));
+```javascript
+passport.use(new VKontakteStrategy(
+  {
+    // clientID: ..., clientSecret: ..., callbackURL: ...,
+    profileFields: ['city', 'bdate']
+  },
+  myVerifyCallbackFn
+));
+```
 
 #### API version
 
 The VK.com profile structure can differ from one API version to another. The specific version to use can be configured with a `apiVersion` parameter. The default is 5.0.
 
 ```javascript
-passport.use(new VKontakteStrategy({
-    // clientID, clientSecret and callbackURL
+passport.use(new VKontakteStrategy(
+  {
+    // clientID: ..., clientSecret: ..., callbackURL: ...,
     apiVersion: '5.17'
   },
-  // verify callback
+  myVerifyCallbackFn
 ));
 ```
 
