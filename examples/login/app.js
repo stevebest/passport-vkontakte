@@ -1,7 +1,7 @@
 var express = require('express')
   , passport = require('passport')
   , util = require('util')
-  , VkStrategy = require('passport-vkontakte').Strategy;
+  , VkStrategy = require('../../').Strategy;
 
 var VK_APP_ID = process.env.VK_APP_ID;
 var VK_APP_SECRET = process.env.VK_APP_SECRET;
@@ -36,7 +36,12 @@ passport.use(new VkStrategy({
     clientSecret: VK_APP_SECRET,
     callbackURL: "http://localhost:3000/auth/vk/callback"
   },
-  function(accessToken, refreshToken, profile, done) {
+  function verify(accessToken, refreshToken, profile, done) {
+
+      console.log('access token: ', accessToken);
+      console.log('refreshToken: ', refreshToken);
+      console.log('profile: ', profile);
+
     // asynchronous verification, for effect...
     process.nextTick(function () {
       
@@ -52,24 +57,18 @@ passport.use(new VkStrategy({
 
 
 
-var app = express.createServer();
+var app = express();
 
 // configure Express
-
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(express.logger());
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.session({ secret: 'keyboard cat' }));
-  // Initialize Passport!  Also use passport.session() middleware, to support
-  // persistent login sessions (recommended).
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.use(require('cookie-parser')());
+app.use(require('body-parser')());
+app.use(require('express-session')({ secret: 'keyboard cat' }));
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 app.get('/', function(req, res){
@@ -90,7 +89,7 @@ app.get('/login', function(req, res){
 //   redirecting the user to vk.com.  After authorization, VK will
 //   redirect the user back to this application at /auth/vk/callback
 app.get('/auth/vk',
-  passport.authenticate('vk'),
+  passport.authenticate('vkontakte'),
   function(req, res){
     // The request will be redirected to VK for authentication, so this
     // function will not be called.
@@ -102,7 +101,7 @@ app.get('/auth/vk',
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 app.get('/auth/vk/callback', 
-  passport.authenticate('vk', { failureRedirect: '/login' }),
+  passport.authenticate('vkontakte', { failureRedirect: '/login' }),
   function(req, res) {
     res.redirect('/');
   });

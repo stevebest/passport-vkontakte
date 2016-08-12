@@ -2,9 +2,11 @@
   "name": "passport-vkontakte-examples-login",
   "version": "0.0.0",
   "dependencies": {
-    "express": ">= 0.0.0",
+    "express": "4.14.0",
     "ejs": ">= 0.0.0",
-    "passport": ">= 0.0.0",
-    "passport-vkontakte": ">= 0.0.0"
+    "passport": ">= 0.0.0"
+  },
+  "scripts": {
+    "start": "node app"
   }
 }

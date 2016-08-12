@@ -1,5 +1,18 @@
 <% if (!user) { %>
+
 	<h2>Welcome! Please log in.</h2>
+    <a href="/auth/vk">Log in with VK</a>
+
 <% } else { %>
-	<h2>Hello, <%= user.username %>.</h2>
+
+	<h2>Hello, <%= user.displayName %>.</h2>
+
+    <p>VK ID: <%= user.id %></p>
+    <p>VK Username: <%= user.username %></p>
+    <p>VK Name: <%= user.displayName %></p>
+
+    <p>
+        <a href="/logout">Log out</a>
+    </p>
+
 <% } %>
