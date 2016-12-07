@@ -27,6 +27,7 @@ accepts these credentials and calls `done` providing a user, as well as
 ```javascript
 const VKontakteStrategy = require('passport-vkontakte').Strategy;
 
+// User session support middlewares. Your exact suite might vary depending on your app's needs.
 app.use(require('cookie-parser')());
 app.use(require('body-parser').urlencoded({extended: true}));
 app.use(require('express-session')({secret:'keyboard cat', resave: true, saveUninitialized: true}));
@@ -39,26 +40,28 @@ passport.use(new VKontakteStrategy(
     clientSecret: VKONTAKTE_APP_SECRET,
     callbackURL:  "http://localhost:3000/auth/vkontakte/callback"
   },
-  function myVerifyCallbackFn(accessToken, refreshToken, params, profile, done){
+  function myVerifyCallbackFn(accessToken, refreshToken, params, profile, done) {
 
     // Now that we have user's `profile` as seen by VK, we can
     // use it to find corresponding database records on our side.
     // Also we have user's `params` that contains email address (if set in 
-    // scope), token lifetime and etc.
+    // scope), token lifetime, etc.
     // Here, we have a hypothetical `User` class which does what it says.
     User.findOrCreate({ vkontakteId: profile.id })
-        .then(function (user) { done(null, user) })
+        .then(function (user) { done(null, user); })
         .catch(done);
   }
 ));
 
-//Passport functions, required for session
+// User session support for our hypothetical `user` objects.
 passport.serializeUser(function(user, done) {
     done(null, user.id);
 });
 
 passport.deserializeUser(function(id, done) {
-    db.User.findById(id,done);
+    User.findById(id)
+        .then(function (user) { done(null, user); })
+        .catch(done);
 });
 ```
 
@@ -81,7 +84,7 @@ app.get('/auth/vkontakte/callback',
   })
 );
 
-app.get('/',function(req,res){
+app.get('/', function(req, res) {
     //Here you have an access to req.user
     res.json(req.user);
 });
