@@ -43,8 +43,8 @@ passport.use(new VKontakteStrategy(
 
     // Now that we have user's `profile` as seen by VK, we can
     // use it to find corresponding database records on our side.
-    // Also we have user's `params` that contains email address, token
-    // lifetime and 
+    // Also we have user's `params` that contains email address (if set in 
+    // scope), token lifetime and etc.
     // Here, we have a hypothetical `User` class which does what it says.
     User.findOrCreate({ vkontakteId: profile.id })
         .then(function (user) { done(null, user) })
