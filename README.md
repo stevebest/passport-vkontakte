@@ -27,22 +27,39 @@ accepts these credentials and calls `done` providing a user, as well as
 ```javascript
 const VKontakteStrategy = require('passport-vkontakte').Strategy;
 
+app.use(require('cookie-parser')());
+app.use(require('body-parser').urlencoded({extended: true}));
+app.use(require('express-session')({secret:'keyboard cat', resave: true, saveUninitialized: true}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 passport.use(new VKontakteStrategy(
   {
     clientID:     VKONTAKTE_APP_ID, // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'
     clientSecret: VKONTAKTE_APP_SECRET,
     callbackURL:  "http://localhost:3000/auth/vkontakte/callback"
   },
-  function myVerifyCallbackFn(accessToken, refreshToken, profile, done) {
+  function myVerifyCallbackFn(accessToken, refreshToken, params, profile, done){
 
     // Now that we have user's `profile` as seen by VK, we can
     // use it to find corresponding database records on our side.
+    // Also we have user's `params` that contains email address (if set in 
+    // scope), token lifetime and etc.
     // Here, we have a hypothetical `User` class which does what it says.
     User.findOrCreate({ vkontakteId: profile.id })
         .then(function (user) { done(null, user) })
         .catch(done);
   }
 ));
+
+//Passport functions, required for session
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+    db.User.findById(id,done);
+});
 ```
 
 #### Authenticate Requests
@@ -54,19 +71,20 @@ For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
 ```javascript
-app.get('/auth/vkontakte',
-  passport.authenticate('vkontakte'),
-  function (req, res) {
-    // The request will be redirected to vk.com for authentication, so
-    // this function will not be called.
-  });
+//This function will pass callback, scope and request new token
+app.get('/auth/vkontakte', passport.authenticate('vkontakte'));
 
 app.get('/auth/vkontakte/callback',
-  passport.authenticate('vkontakte', { failureRedirect: '/login' }),
-  function (req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  });
+  passport.authenticate('vkontakte', {
+    successRedirect: '/',
+    failureRedirect: '/login' 
+  })
+);
+
+app.get('/',function(req,res){
+    //Here you have an access to req.user
+    res.json(req.user);
+});
 ```
 
 ##### Display Mode
