@@ -142,6 +142,22 @@ passport.use(new VKontakteStrategy(
 ));
 ```
 
+#### Profile fields language
+
+By default, profile fields such as name are returned in English. The strategy can be 
+configured with a `lang` parameter which specifies language of value returned.
+
+For example, this would configure the strategy to return name in Russian:
+```javascript
+passport.use(new VkontakteStrategy(
+  {
+    // clientID: ..., clientSecret: ..., callbackURL: ...,
+    lang: 'ru'
+  },
+  myVerifyCallbackFn
+));
+```
+
 #### API version
 
 The VK.com profile structure can differ from one API version to another. The specific version to use can be configured with a `apiVersion` parameter. The default is 5.0.
@@ -155,6 +171,7 @@ passport.use(new VKontakteStrategy(
   myVerifyCallbackFn
 ));
 ```
+
 
 ## Tests
 
