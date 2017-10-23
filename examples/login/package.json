@@ -2,8 +2,11 @@
   "name": "passport-vkontakte-examples-login",
   "version": "0.0.0",
   "dependencies": {
-    "express": "4.14.0",
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
     "ejs": "2.5.1",
+    "express": "4.14.0",
+    "express-session": "^1.15.6",
     "passport": "0.3.2"
   },
   "scripts": {
