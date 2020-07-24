@@ -20,50 +20,85 @@ unobtrusively integrated into any application or framework that supports
 #### Configure Strategy
 
 The VK.com authentication strategy authenticates users using a VK.com
-account and OAuth 2.0 tokens.  The strategy requires a `verify` callback, which
+account and OAuth 2.0 tokens. The strategy requires a `verify` callback, which
 accepts these credentials and calls `done` providing a user, as well as
 `options` specifying a app ID, app secret, and callback URL.
 
 ```javascript
-const VKontakteStrategy = require('passport-vkontakte').Strategy;
+const VKontakteStrategy = require("passport-vkontakte").Strategy;
 
 // User session support middlewares. Your exact suite might vary depending on your app's needs.
-app.use(require('cookie-parser')());
-app.use(require('body-parser').urlencoded({extended: true}));
-app.use(require('express-session')({secret:'keyboard cat', resave: true, saveUninitialized: true}));
+app.use(require("cookie-parser")());
+app.use(require("body-parser").urlencoded({ extended: true }));
+app.use(
+    require("express-session")({
+        secret: "keyboard cat",
+        resave: true,
+        saveUninitialized: true,
+    })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new VKontakteStrategy(
-  {
-    clientID:     VKONTAKTE_APP_ID, // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'
-    clientSecret: VKONTAKTE_APP_SECRET,
-    callbackURL:  "http://localhost:3000/auth/vkontakte/callback"
-  },
-  function myVerifyCallbackFn(accessToken, refreshToken, params, profile, done) {
-
-    // Now that we have user's `profile` as seen by VK, we can
-    // use it to find corresponding database records on our side.
-    // Also we have user's `params` that contains email address (if set in 
-    // scope), token lifetime, etc.
-    // Here, we have a hypothetical `User` class which does what it says.
-    User.findOrCreate({ vkontakteId: profile.id })
-        .then(function (user) { done(null, user); })
-        .catch(done);
-  }
-));
+passport.use(
+    new VKontakteStrategy(
+        {
+            clientID: VKONTAKTE_APP_ID, // VK.com docs call it 'API ID', 'app_id', 'api_id', 'client_id' or 'apiId'
+            clientSecret: VKONTAKTE_APP_SECRET,
+            callbackURL: "http://localhost:3000/auth/vkontakte/callback",
+        },
+        function myVerifyCallbackFn(
+            accessToken,
+            refreshToken,
+            params,
+            profile,
+            done
+        ) {
+            // Now that we have user's `profile` as seen by VK, we can
+            // use it to find corresponding database records on our side.
+            // Also we have user's `params` that contains email address (if set in
+            // scope), token lifetime, etc.
+            // Here, we have a hypothetical `User` class which does what it says.
+            User.findOrCreate({ vkontakteId: profile.id })
+                .then(function (user) {
+                    done(null, user);
+                })
+                .catch(done);
+        }
+    )
+);
 
 // User session support for our hypothetical `user` objects.
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
     done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser(function (id, done) {
     User.findById(id)
-        .then(function (user) { done(null, user); })
+        .then(function (user) {
+            done(null, user);
+        })
         .catch(done);
 });
 ```
+
+#### `verify` callback signatures
+
+A `verify` callback function is called when resource owner (the user) accepts or declines the
+authorization request. It can have one of four signatures:
+
+-   `function(accessToken, refreshToken, profile, verified)`
+-   `function(accessToken, refreshToken, params, profile, verified)`
+-   `function(req, accessToken, refreshToken, params, profile, verified)`
+
+| Parameter      | Type      | Description                                  |
+| -------------- | --------- | -------------------------------------------- |
+| `req`          | ???       |                                              |
+| `accessToken`  | string    | [OAuth2 access token][oauth2-access-token]   |
+| `refreshToken` | string    | [OAuth2 refresh token][oauth2-refresh-token] |
+| `params`       | `Params`  |                                              |
+| `profile`      | `Profile` | User profile                                 |
+| `done`         | function  |                                              |
 
 #### Authenticate Requests
 
@@ -75,16 +110,17 @@ application:
 
 ```javascript
 //This function will pass callback, scope and request new token
-app.get('/auth/vkontakte', passport.authenticate('vkontakte'));
+app.get("/auth/vkontakte", passport.authenticate("vkontakte"));
 
-app.get('/auth/vkontakte/callback',
-  passport.authenticate('vkontakte', {
-    successRedirect: '/',
-    failureRedirect: '/login' 
-  })
+app.get(
+    "/auth/vkontakte/callback",
+    passport.authenticate("vkontakte", {
+        successRedirect: "/",
+        failureRedirect: "/login",
+    })
 );
 
-app.get('/', function(req, res) {
+app.get("/", function (req, res) {
     //Here you have an access to req.user
     res.json(req.user);
 });
@@ -97,13 +133,14 @@ mode. Refer to the [OAuth dialog
 documentation](http://vk.com/dev/auth_mobile)
 for information on its usage.
 
-
 ```javascript
-app.get('/auth/vkontakte',
-  passport.authenticate('vkontakte', { display: 'mobile' }),
-  function(req, res){
-    // ...
-  });
+app.get(
+    "/auth/vkontakte",
+    passport.authenticate("vkontakte", { display: "mobile" }),
+    function (req, res) {
+        // ...
+    }
+);
 ```
 
 #### Extended Permissions
@@ -114,17 +151,21 @@ via the `scope` option to `passport.authenticate()`.
 For example, this authorization requests permission to the user's friends:
 
 ```javascript
-app.get('/auth/vkontakte',
-  passport.authenticate('vkontakte', { scope: ['status', 'email', 'friends', 'notify'] }),
-  function(req, res){
-    // The request will be redirected to vk.com for authentication, with
-    // extended permissions.
-  });
+app.get(
+    "/auth/vkontakte",
+    passport.authenticate("vkontakte", {
+        scope: ["status", "email", "friends", "notify"],
+    }),
+    function (req, res) {
+        // The request will be redirected to vk.com for authentication, with
+        // extended permissions.
+    }
+);
 ```
 
 #### Profile Fields
 
-The VK.com profile may contain a lot of information.  The
+The VK.com profile may contain a lot of information. The
 strategy can be configured with a `profileFields` parameter which specifies a
 list of additional fields your application needs. For example, to fetch users's `city` and `bdate` configure strategy like this.
 
@@ -144,18 +185,21 @@ passport.use(new VKontakteStrategy(
 
 #### Profile fields language
 
-By default, profile fields such as name are returned in English. The strategy can be 
+By default, profile fields such as name are returned in English. The strategy can be
 configured with a `lang` parameter which specifies language of value returned.
 
 For example, this would configure the strategy to return name in Russian:
+
 ```javascript
-passport.use(new VkontakteStrategy(
-  {
-    // clientID: ..., clientSecret: ..., callbackURL: ...,
-    lang: 'ru'
-  },
-  myVerifyCallbackFn
-));
+passport.use(
+    new VkontakteStrategy(
+        {
+            // clientID: ..., clientSecret: ..., callbackURL: ...,
+            lang: "ru",
+        },
+        myVerifyCallbackFn
+    )
+);
 ```
 
 #### API version
@@ -163,13 +207,15 @@ passport.use(new VkontakteStrategy(
 The VK.com profile structure can differ from one API version to another. The specific version to use can be configured with a `apiVersion` parameter. The default is 5.0.
 
 ```javascript
-passport.use(new VKontakteStrategy(
-  {
-    // clientID: ..., clientSecret: ..., callbackURL: ...,
-    apiVersion: '5.17'
-  },
-  myVerifyCallbackFn
-));
+passport.use(
+    new VKontakteStrategy(
+        {
+            // clientID: ..., clientSecret: ..., callbackURL: ...,
+            apiVersion: "5.17",
+        },
+        myVerifyCallbackFn
+    )
+);
 ```
 
 #### Get req
@@ -182,16 +228,24 @@ To get `req` into the handler, just add it as the first argument
 For example, the first argument will contain the req object:
 
 ```javascript
-passport.use(new VKontakteStrategy(
-  {
-    // clientID: ..., clientSecret: ..., callbackURL: ...,
-  },
-  function myVerifyCallbackFn(req, accessToken, refreshToken, params, profile, done) {
-    // Your code
-  }
-));
+passport.use(
+    new VKontakteStrategy(
+        {
+            // clientID: ..., clientSecret: ..., callbackURL: ...,
+        },
+        function myVerifyCallbackFn(
+            req,
+            accessToken,
+            refreshToken,
+            params,
+            profile,
+            done
+        ) {
+            // Your code
+        }
+    )
+);
 ```
-
 
 ## Tests
 
@@ -200,8 +254,8 @@ passport.use(new VKontakteStrategy(
 
 ## Credits
 
-  - [Jared Hanson](http://github.com/jaredhanson)
-  - [Stepan Stolyarov](http://github.com/stevebest)
+-   [Jared Hanson](http://github.com/jaredhanson)
+-   [Stepan Stolyarov](http://github.com/stevebest)
 
 ## Special Thanks
 
@@ -231,3 +285,6 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[oauth2-access-token]: https://tools.ietf.org/html/rfc6749#section-1.4
+[oauth2-refresh-token]: https://tools.ietf.org/html/rfc6749#section-1.5
