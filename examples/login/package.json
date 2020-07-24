@@ -4,7 +4,7 @@
     "dependencies": {
         "body-parser": "^1.18.2",
         "cookie-parser": "^1.4.3",
-        "ejs": "^2.5.1",
+        "ejs": "^2.5.5",
         "express": "^4.17.1",
         "express-session": "^1.15.6",
         "passport": "0.3.2"
