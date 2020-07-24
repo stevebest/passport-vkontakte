@@ -174,12 +174,12 @@ passport.use(new VKontakteStrategy(
 
 #### Get req
 
-To get `req` into the handler, just add it as the first parameter
+To get `req` into the handler, just add it as the first argument
 
 > Other strategies pass the `passReqToCallback: true` property to `Strategy` options.
 > But here it is enough to add the first argument `req`
 
-For example, the first parameter will contain the req object:
+For example, the first argument will contain the req object:
 
 ```javascript
 passport.use(new VKontakteStrategy(
