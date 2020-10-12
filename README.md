@@ -1,15 +1,13 @@
 # Passport-VKontakte
 
-[![Build Status](https://secure.travis-ci.org/stevebest/passport-vkontakte.png)](http://travis-ci.org/stevebest/passport-vkontakte)
+[![Build Status](https://secure.travis-ci.org/stevebest/passport-vkontakte.png)][travis-build-status]
 
-[Passport](http://passportjs.org/) strategy for authenticating with [VK.com](http://www.vk.com/)
-using the OAuth 2.0 API.
+[Passport][passport-js] strategy for authenticating with [VK][vk] using the OAuth 2.0 API.
 
-This module lets you authenticate using VK.com in your Node.js applications.
-By plugging into Passport, VK.com authentication can be easily and
+This module lets you authenticate using VK in your Node.js applications.
+By plugging into Passport, VK authentication can be easily and
 unobtrusively integrated into any application or framework that supports
-[Connect](http://www.senchalabs.org/connect/)-style middleware, including
-[Express](http://expressjs.com/).
+[Connect][connect]-style middleware, including [Express][express].
 
 ## Installation
 
@@ -17,12 +15,89 @@ unobtrusively integrated into any application or framework that supports
 
 ## Usage
 
-#### Configure Strategy
+### Configure Strategy
 
-The VK.com authentication strategy authenticates users using a VK.com
-account and OAuth 2.0 tokens. The strategy requires a `verify` callback, which
-accepts these credentials and calls `done` providing a user, as well as
-`options` specifying a app ID, app secret, and callback URL.
+Using this strategy, you can authenticate users who have a VK account and
+access their data, given their access permission.
+
+In order to be used, a strategy must be configured with two parameters.
+
+```javascript
+import Strategy as VKStrategy from "passport-vkontakte";
+passport.use(new VKStrategy(options, verify));
+```
+
+| Parameter | Type     | Desciption                       |
+| --------- | -------- | -------------------------------- |
+| `options` | object   | App credentials and callback URL |
+| `verify`  | function | Strategy verification callback   |
+
+#### Strategy options
+
+The `options` objects provides the strategy with the information it needs to
+represent your app to VK API. It includes your app credentials (application id
+and secret), as well as the callback URL to which the user will be redirected
+after they complete the authentication process.
+
+| Field           | Type       | Description                                                     |
+| --------------- | ---------- | --------------------------------------------------------------- |
+| `clientID`      | **string** | Your app's client id                                            |
+| `clientSecret`  | **string** | Your app's secret                                               |
+| `callbackURL`   | **string** | The full URL to your authentication completion handler          |
+| `profileFields` | array      | A list of profile fields                                        |
+| `apiVersion`    | string     | The version of VK API implementation                            |
+| `lang`          | string     | The language which should be used to represent the profile data |
+
+#### Strategy `verify` callback
+
+A `verify` callback function is called after resource owner (the user) has
+accepted or declined the authorization request. In the example below, this
+function is called `myVerifyCallbackFn`.
+
+It can have one of four signatures:
+
+```javascript
+function(accessToken, refreshToken, profile, done) {}
+function(accessToken, refreshToken, params, profile, done) {}
+function(req, accessToken, refreshToken, params, profile, done) {}
+```
+
+| Parameter      | Type     | Description                                  |
+| -------------- | -------- | -------------------------------------------- |
+| `req`          | object   |                                              |
+| `accessToken`  | string   | [OAuth2 access token][oauth2-access-token]   |
+| `refreshToken` | string   | [OAuth2 refresh token][oauth2-refresh-token] |
+| `params`       | object   |                                              |
+| `profile`      | object   | User profile                                 |
+| `done`         | function | "Done" callback                              |
+
+The `verify` function can use the `profile` and `params` fields to find, create
+or update any kind of information that corresponds to now authenticated user.
+
+After the user has been successfully authenticated, the `done` function should
+be called, to supply Passport with the `user` data as seen by the application.
+
+```javascript
+return done(null, user);
+```
+
+In case of authentication error, `false` should be supplied instead.
+
+```javascript
+return done(null, false);
+```
+
+Additional `info` object can be provided to indicate the reason for failure.
+
+```javascript
+return done(null, false, { message: "User account is suspended" });
+```
+
+For transient errors, pass the error object as the first parameter.
+
+```javascript
+return done(new Error("User database is not available, try later"));
+```
 
 ```javascript
 const VKontakteStrategy = require("passport-vkontakte").Strategy;
@@ -81,24 +156,6 @@ passport.deserializeUser(function (id, done) {
         .catch(done);
 });
 ```
-
-#### `verify` callback signatures
-
-A `verify` callback function is called when resource owner (the user) accepts or declines the
-authorization request. It can have one of four signatures:
-
--   `function(accessToken, refreshToken, profile, verified)`
--   `function(accessToken, refreshToken, params, profile, verified)`
--   `function(req, accessToken, refreshToken, params, profile, verified)`
-
-| Parameter      | Type      | Description                                  |
-| -------------- | --------- | -------------------------------------------- |
-| `req`          | ???       |                                              |
-| `accessToken`  | string    | [OAuth2 access token][oauth2-access-token]   |
-| `refreshToken` | string    | [OAuth2 refresh token][oauth2-refresh-token] |
-| `params`       | `Params`  |                                              |
-| `profile`      | `Profile` | User profile                                 |
-| `done`         | function  |                                              |
 
 #### Authenticate Requests
 
@@ -173,14 +230,16 @@ Notice that requesting the user's email address requires an `email` access
 scope, which you should explicitly list as in following example:
 
 ```javascript
-passport.use(new VKontakteStrategy(
-  {
-    // clientID: ..., clientSecret: ..., callbackURL: ...,
-    scope: ['email' /* ... and others, if needed */]
-    profileFields: ['email', 'city', 'bdate']
-  },
-  myVerifyCallbackFn
-));
+passport.use(
+    new VKontakteStrategy(
+        {
+            ...{ clientID, clientSecret, callbackURL },
+            scope: ["email" /* ... and others, if needed */],
+            profileFields: ["email", "city", "bdate"],
+        },
+        myVerifyCallbackFn
+    )
+);
 ```
 
 #### Profile fields language
@@ -194,7 +253,7 @@ For example, this would configure the strategy to return name in Russian:
 passport.use(
     new VkontakteStrategy(
         {
-            // clientID: ..., clientSecret: ..., callbackURL: ...,
+            ...{ clientID, clientSecret, callbackURL },
             lang: "ru",
         },
         myVerifyCallbackFn
@@ -204,45 +263,16 @@ passport.use(
 
 #### API version
 
-The VK.com profile structure can differ from one API version to another. The specific version to use can be configured with a `apiVersion` parameter. The default is 5.0.
+The VK.com profile structure can differ from one API version to another. The specific version to use can be configured with a `apiVersion` parameter. The default is `5.110`.
 
 ```javascript
 passport.use(
     new VKontakteStrategy(
         {
-            // clientID: ..., clientSecret: ..., callbackURL: ...,
+            ...{ clientID, clientSecret, callbackURL },
             apiVersion: "5.17",
         },
         myVerifyCallbackFn
-    )
-);
-```
-
-#### Get req
-
-To get `req` into the handler, just add it as the first argument
-
-> Other strategies pass the `passReqToCallback: true` property to `Strategy` options.
-> But here it is enough to add the first argument `req`
-
-For example, the first argument will contain the req object:
-
-```javascript
-passport.use(
-    new VKontakteStrategy(
-        {
-            // clientID: ..., clientSecret: ..., callbackURL: ...,
-        },
-        function myVerifyCallbackFn(
-            req,
-            accessToken,
-            refreshToken,
-            params,
-            profile,
-            done
-        ) {
-            // Your code
-        }
     )
 );
 ```
@@ -286,5 +316,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+[passport-js]: http://passportjs.org/
+[vk]: https://www.vk.com/
+[connect]: http://www.senchalabs.org/connect/
+[express]: http://expressjs.com/
+[travis-build-status]: http://travis-ci.org/stevebest/passport-vkontakte
 [oauth2-access-token]: https://tools.ietf.org/html/rfc6749#section-1.4
 [oauth2-refresh-token]: https://tools.ietf.org/html/rfc6749#section-1.5
