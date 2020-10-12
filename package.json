@@ -1,6 +1,6 @@
 {
   "name": "passport-vkontakte",
-  "version": "0.3.3",
+  "version": "0.5.0",
   "description": "VK.com authentication strategy for Passport.",
   "author": {
     "name": "Jared Hanson",
