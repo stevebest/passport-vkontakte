@@ -1,6 +1,6 @@
 {
   "name": "passport-vkontakte",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "description": "VK.com authentication strategy for Passport.",
   "repository": {
     "type": "git",
@@ -9,19 +9,22 @@
   "bugs": {
     "url": "http://github.com/JerryCauser/passport-vkontakte/issues"
   },
-  "main": "./lib/index.js",
+  "main": "src/index.js",
   "dependencies": {
-    "pkginfo": "^0.4.1",
-    "passport-oauth2": "^1.5.0"
+    "passport-oauth2": "^1.6.1"
   },
   "devDependencies": {
+    "prettier": "^2.7.1",
+    "standard": "^17.0.0",
     "vows": "^0.8.3"
   },
   "scripts": {
-    "test": "vows test/*-test.js"
+    "test": "standard && vows test/*.test.js",
+    "prettify": "prettier --write -u './**/*.js' !./cjs/index.js",
+    "fix": "npm run prettify && standard --fix"
   },
   "engines": {
-    "node": ">= 12.16.1"
+    "node": ">= 16"
   },
   "license": "MIT",
   "keywords": [
@@ -33,5 +36,12 @@
     "authn",
     "authentication",
     "identity"
-  ]
+  ],
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "standard"
+    ]
+  },
+  "eslintIgnore": ["dist"]
 }
